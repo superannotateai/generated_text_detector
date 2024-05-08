@@ -1,0 +1,41 @@
+FROM nvidia/cuda:12.2.2-cudnn8-runtime-ubuntu22.04
+
+# Set utility env varibles
+ENV PATH=/generated_text_detector/miniconda/bin:$PATH
+
+# Install some basic utilities
+RUN apt-get update && apt-get install -y \
+    curl \
+    ca-certificates \
+    sudo \
+    git \
+    bzip2 \
+    build-essential \
+    libgl1 \
+    libglib2.0-0 \
+ && rm -rf /var/lib/apt/lists/*
+
+# Set workdir
+WORKDIR /generated_text_detector
+
+# Install Miniconda and Python
+RUN curl -sLo /generated_text_detector/miniconda.sh https://repo.continuum.io/miniconda/Miniconda3-py311_24.1.2-0-Linux-x86_64.sh \
+ && chmod +x /generated_text_detector/miniconda.sh \
+ && /generated_text_detector/miniconda.sh -b -p /generated_text_detector/miniconda \
+ && rm /generated_text_detector/miniconda.sh \
+ && conda install -y python==3.11 \
+ && pip3 install nvitop
+
+# Install python requirements
+COPY generated_text_detector/requirements.txt .
+RUN pip3 install -r requirements.txt --no-cache
+RUN python -m nltk.downloader punkt
+
+# Copy code to container
+COPY generated_text_detector/ generated_text_detector/
+COPY etc/ etc/
+COPY key.pem cert.pem ./
+COPY version.txt ./
+
+EXPOSE 8080
+CMD uvicorn --host 0.0.0.0 --port 8080 --ssl-keyfile=./key.pem --ssl-certfile=./cert.pem generated_text_detector.fastapi_app:app

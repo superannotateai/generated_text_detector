@@ -1,0 +1,14 @@
+## [1.0.0] - 2024-08-05
+
+_First release._
+
+### Added
+
+- **Breaking:** Base functionality for HTTP service
+- **Breaking:** Model for inference Generated Text Detection
+- **Breaking:** Teamplate of form builder for SuperAnnotate infrastructure
+
+
+## [0.0.1] - 2024-10-04
+
+_Init._
