@@ -1,4 +1,11 @@
-# Generated Text Detection #
+<p align="center">
+<img src="assets/SA_logo.png" alt="SuperAnnotate Logo" width="100" height="100"/>
+</p>
+
+<h1 align="center">
+SuperAnnotate <br/>
+Generated Text Detection <br/>
+</h1>
 
 [![Version](https://img.shields.io/badge/version-1.0.0-green.svg)]() [![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/release/python-3110/) [![CUDA 12.2](https://img.shields.io/badge/CUDA-12.2-green.svg)](https://developer.nvidia.com/cuda-12-2-0-download-archive)
 
@@ -9,8 +16,13 @@ To integrate the detector with your project on the SuperAnnotate platform, pleas
 
 ### Model ###
 
-The Generated Text Detection model is based on a fine-tuned RoBERTa Large architecture. Trained on a diverse dataset sourced from multiple open datasets, it excels at classifying text inputs as either generated/synthetic or human-written. \
-For more details and access to the model, visit its [Hugging Face Model Hub page](https://huggingface.co/SuperAnnotate/roberta-large-llm-content-detector).
+The Generated Text Detection model is built on a fine-tuned RoBERTa Large architecture. It has been extensively trained on a diverse dataset that includes internal generation and subset of RAID train dataset, enabling it to accurately classify text as either generated (synthetic) or human-written. \
+This model is optimized for robust detection, offering two configurations based on specific needs:
+
+- **Optimized for Low False Positive Rate (FPR):** [AI Detector](https://huggingface.co/SuperAnnotate/ai-detector)
+- **Optimized for High Overall Prediction Accuracy:** [LLM Content Detector V2](https://huggingface.co/SuperAnnotate/roberta-large-llm-content-detector-V2)
+
+For more details and access to the model weights, please refer to the links above on the Hugging Face Model Hub.
 
 ## How to run it ##
 
@@ -18,7 +30,7 @@ For more details and access to the model, visit its [Hugging Face Model Hub page
 
 You can deploy the service wherever it is convenient; one of the basic options is on a created EC2 instance. Learn about instance creation and setup [here](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EC2_GetStarted.html). \
 Hardware requirements will depend on your on your deployment type. Recommended ec2 instances for deployment type 2:
-- **GPU**: [**g3s.xlarge**](https://instances.vantage.sh/aws/ec2/g3s.xlarge)
+- **GPU**: [**g4dn.xlarge**](https://instances.vantage.sh/aws/ec2/g4dn.xlarge)
 - **CPU**: [**a1.large**](https://instances.vantage.sh/aws/ec2/a1.large)
 
 ***NOTES***:
@@ -59,18 +71,16 @@ Hardware requirements will depend on your on your deployment type. Recommended e
 
 ### Benchmark ###
 
-The model was evaluated on a benchmark collected from the same datasets used for training, alongside a closed subset of SuperAnnotate. \
-However, there are no direct intersections of samples between the training data and the benchmark. \
-The benchmark comprises 1k samples, with 200 samples per category. \
-The model's performance is compared with open-source solutions and popular API detectors in the table below:
+This solution has been validated using the [RAID](https://raid-bench.xyz/) benchmark, which includes a diverse dataset covering:
+- 11 LLM models
+- 11 adversarial attacks
+- 8 domains
 
-| Model/API                                                                                        | Wikipedia | Reddit QA | SA instruction | Papers | Average |
-|--------------------------------------------------------------------------------------------------|----------:|----------:|---------------:|-------:|--------:|
-| [Hello-SimpleAI](https://huggingface.co/Hello-SimpleAI/chatgpt-detector-roberta)                 |   **0.97**|      0.95 |           0.82 |   0.69 |    0.86 |
-| [RADAR](https://huggingface.co/spaces/TrustSafeAI/RADAR-AI-Text-Detector)                        |      0.47 |      0.84 |           0.59 |   0.82 |    0.68 |
-| [GPTZero](https://gptzero.me)                                                                    |      0.72 |      0.79 |        **0.90**|   0.67 |    0.77 |
-| [Originality.ai](https://originality.ai)                                                         |      0.91 |   **0.97**|           0.77 |**0.93**|**0.89** |
-| [LLM content detector](https://huggingface.co/SuperAnnotate/roberta-large-llm-content-detector)  |      0.88 |      0.95 |           0.84 |   0.81 |   0.87  |
+The performance of Binoculars is compared to other detectors on the [RAID leaderboard](https://raid-bench.xyz/leaderboard).
+
+![RAID leaderboard](assets/RAID_leaderboard_oct_2024.png)
+
+This is a snapshot of the leaderboard for October 2024
 
 ### Time performance ###
 
