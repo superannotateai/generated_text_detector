@@ -3,6 +3,8 @@ import torch.nn.functional as F
 from nltk.tokenize import sent_tokenize
 from transformers import RobertaTokenizer
 
+from generated_text_detector.controllers.schemas_type import Author
+from generated_text_detector.utils.preprocessing import preprocessing_text
 from generated_text_detector.utils.model.roberta_classifier import RobertaClassifier
 
 
@@ -21,6 +23,7 @@ class GeneratedTextDetector:
         model_name_or_path: str,
         device: str,
         max_len: int = 512,
+        preprocessing: bool = False
     ) -> None:
         
         self.device = torch.device(device)
@@ -30,6 +33,7 @@ class GeneratedTextDetector:
         self.model.eval()
 
         self.__max_len = max_len
+        self.preprocessing = preprocessing
 
         # Optimizing GPU inference
         if self.device.type == 'cuda':
@@ -60,14 +64,14 @@ class GeneratedTextDetector:
         for sentence in sent_tokenize(text):
             temp_count_tokens = len(self.tokenizer.encode(sentence))
             if cur_count_tokens + temp_count_tokens > self.__max_len:
-                chunks.append(cur_chunk)
+                chunks.append(cur_chunk.strip())
                 cur_chunk = sentence
                 cur_count_tokens = temp_count_tokens
             else:
                 cur_count_tokens += temp_count_tokens
                 cur_chunk += " " + sentence
         
-        chunks.append(cur_chunk)
+        chunks.append(cur_chunk.strip())
 
         return chunks
 
@@ -80,9 +84,6 @@ class GeneratedTextDetector:
         :return: List of scores
         :rtype: list[float]
         """
-        # Preprocessing
-        texts = [" ".join(text.split()) for text in texts]
-
         tokens = self.tokenizer.batch_encode_plus(
             texts,
             add_special_tokens=True,
@@ -111,6 +112,12 @@ class GeneratedTextDetector:
         :return: Text chunks with generated scores
         :rtype: list[tuple[str, float]]
         """
+        # Preprocessing
+        if self.preprocessing:
+            text = preprocessing_text(text)
+        else:
+            text = " ".join(text.split())
+
         text_chunks = self.__split_by_chunks(text)
 
         scores = self.__model_pass(text_chunks).tolist()
@@ -120,12 +127,68 @@ class GeneratedTextDetector:
         return res
     
 
+    def detect_report(self, text: str) -> dict:
+        """Detects if text is generated and prepare a report.
+
+        :param text: Input text
+        :type text: str
+        :return: Text chunks with generated scores
+        :rtype: list[tuple[str, float]]
+        """
+        # Preprocessing
+        if self.preprocessing:
+            text = preprocessing_text(text)
+        else:
+            text = " ".join(text.split())
+
+        text_chunks = self.__split_by_chunks(text)
+        scores = self.__model_pass(text_chunks)
+
+        # Average scores
+        gen_score = sum(scores) / len(scores)
+        gen_score = gen_score.item() 
+        author = self.__determine_author(gen_score).value
+
+        res = {
+            "generated_score": gen_score,
+            "author": author
+        }
+       
+        return res
+
+
+    @staticmethod
+    def __determine_author(generated_score: float) -> Author:
+        """Function for converting score for final prediction
+        The generated score is compared with heuristics obtained from analysis on validation data
+        As a result, we get 5 categories described in the `Author` class
+        
+        :param text: Generated score from detector model
+        :type text: float, should be from 0 to 1
+        :return: Final prediction athor
+        :rtype: Autrhor
+        """
+        assert 0 <= generated_score <= 1
+
+        if generated_score > 0.9:
+            return Author.LLM_GENERATED
+        elif generated_score > 0.7:
+            return Author.PROBABLY_LLM_GENERATED
+        elif generated_score > 0.3:
+            return Author.NOT_SURE
+        elif generated_score > 0.1:
+            return Author.PROBABLY_HUMAN_WRITTEN
+        else:
+            return Author.HUMAN
+
+
 if __name__ == "__main__":
     detector = GeneratedTextDetector(
         "SuperAnnotate/ai-detector",
-        "cuda:0"
+        "cuda:0",
+        preprocessing=True
     )
 
-    res = detector.detect("Hello, world!")
+    res = detector.detect_report("Hello, world!")
 
     print(res)
