@@ -19,8 +19,8 @@ To integrate the detector with your project on the SuperAnnotate platform, pleas
 The Generated Text Detection model is built on a fine-tuned RoBERTa Large architecture. It has been extensively trained on a diverse dataset that includes internal generation and subset of RAID train dataset, enabling it to accurately classify text as either generated (synthetic) or human-written. \
 This model is optimized for robust detection, offering two configurations based on specific needs:
 
-- **Optimized for Low False Positive Rate (FPR):** [AI Detector](https://huggingface.co/SuperAnnotate/ai-detector)
-- **Optimized for High Overall Prediction Accuracy:** [LLM Content Detector V2](https://huggingface.co/SuperAnnotate/roberta-large-llm-content-detector-V2)
+- **Optimized for Low False Positive Rate (FPR):** [AI Detector Low FPR](https://huggingface.co/SuperAnnotate/ai-detector-low-fpr)
+- **Optimized for High Overall Prediction Accuracy:** [AI Detector](https://huggingface.co/SuperAnnotate/ai-detector)
 
 For more details and access to the model weights, please refer to the links above on the Hugging Face Model Hub.
 
@@ -52,7 +52,9 @@ Hardware requirements will depend on your on your deployment type. Recommended e
 ### As python file ###
 
 1. Install requirements: `pip install -r generated_text_detector/requirements.txt`
-2. Set the Python path variable: `export PYTHONPATH="."`
+2. Set the Python path variable:
+  - `export PYTHONPATH="."`
+  - `export DETECTOR_CONFIG_PATH="etc/configs/detector_config.json"`
 3. Run the API: `uvicorn --host 0.0.0.0 --port 8080 --ssl-keyfile=./key.pem --ssl-certfile=./cert.pem generated_text_detector.fastapi_app:app`
 
 ### As docker containers ###

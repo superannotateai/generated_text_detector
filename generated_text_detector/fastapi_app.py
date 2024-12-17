@@ -38,7 +38,7 @@ app.include_router(health_router)
 def parse_args():
     DEFAULT_HOST = "0.0.0.0"
     DEFAULT_PORT = "8080"
-    DEFAULT_DETECTOR_CONFIG_PATH = "etc/detector_config.json"
+    DEFAULT_DETECTOR_CONFIG_PATH = "etc/configs/detector_config.json"
     DEFAULT_DEVICE = "cuda:0"
     
     parser = argparse.ArgumentParser(

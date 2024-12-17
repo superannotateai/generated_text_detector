@@ -1,4 +1,4 @@
 {
-    "text_detector_model": "SuperAnnotate/roberta-large-llm-content-detector",
+    "text_detector_model": "SuperAnnotate/ai-detector",
     "code_default_probability": 0.5
 }

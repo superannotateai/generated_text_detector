@@ -3,7 +3,6 @@ import torch.nn.functional as F
 from nltk.tokenize import sent_tokenize
 from transformers import RobertaTokenizer
 
-from generated_text_detector.controllers.schemas_type import Author
 from generated_text_detector.utils.model.roberta_classifier import RobertaClassifier
 
 
@@ -123,10 +122,10 @@ class GeneratedTextDetector:
 
 if __name__ == "__main__":
     detector = GeneratedTextDetector(
-        "SuperAnnotate/roberta-large-llm-content-detector",
+        "SuperAnnotate/ai-detector",
         "cuda:0"
     )
 
-    res = detector.detect_report("Hello, world!")
+    res = detector.detect("Hello, world!")
 
     print(res)

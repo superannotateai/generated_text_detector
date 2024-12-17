@@ -99,5 +99,5 @@ class RobertaClassifier(nn.Module, PyTorchModelHubMixin):
 
 
 if __name__ == "__main__":
-    model = RobertaClassifier.from_pretrained("SuperAnnotate/roberta-large-llm-content-detector")
+    model = RobertaClassifier.from_pretrained("SuperAnnotate/ai-detector")
     print(model)

@@ -26,7 +26,7 @@ class AggregatedDetector:
         self.code_block_pattern = re.compile(r"```(\w+)?\s*([\s\S]*?)\s*```")
 
 
-    def __split_text_and_code(self, text: str) -> tuple[str, str, str]:
+    def __split_text_and_code(self, text: str) -> tuple[str, str]:
         """Split input text to text and code blocks.
         
         :param text: Input text
@@ -44,13 +44,13 @@ class AggregatedDetector:
         return text, code
 
         
-    def detect_report(self, text: str) -> list[tuple[str, float]]:
+    def detect_report(self, text: str) -> dict:
         """Detects if text is generated and prepare a report.
 
         :param text: Input text
         :type text: str
         :return: Text chunks with generated scores
-        :rtype: list[tuple[str, float]]
+        :rtype: dict with keys: 'generated_score' and 'author'
         """
         text, code = self.__split_text_and_code(text)
 
@@ -124,7 +124,7 @@ class AggregatedDetector:
 if __name__ == "__main__":
     import json
 
-    with open("etc/detector_config.json") as f:
+    with open("etc/configs/detector_config.json") as f:
         detector_config = json.load(f)
 
     detector = AggregatedDetector(
