@@ -7,7 +7,7 @@ SuperAnnotate <br/>
 Generated Text Detection <br/>
 </h1>
 
-[![Version](https://img.shields.io/badge/version-1.0.0-green.svg)]() [![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/release/python-3110/) [![CUDA 12.2](https://img.shields.io/badge/CUDA-12.2-green.svg)](https://developer.nvidia.com/cuda-12-2-0-download-archive)
+[![Version](https://img.shields.io/badge/version-1.1.0-green.svg)]() [![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/release/python-3110/) [![CUDA 12.2](https://img.shields.io/badge/CUDA-12.2-green.svg)](https://developer.nvidia.com/cuda-12-2-0-download-archive)
 
 This repository contains the HTTP service for the Generated Text Detector. \
 To integrate the detector with your project on the SuperAnnotate platform, please follow the instructions provided in our [Tutorial](tutorial.md)

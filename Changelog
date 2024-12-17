@@ -1,3 +1,11 @@
+## [1.1.0] - 2024-17-12
+
+- fix minor mistakes
+- update to new model version in hf
+- add text preprocessing
+- add `detect_report` method directly to text detector
+
+
 ## [1.0.0] - 2024-08-05
 
 _First release._
